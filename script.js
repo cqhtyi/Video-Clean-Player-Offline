@@ -71,7 +71,7 @@
                         'replace': this.players['ku6_out'] + '?vid=$2'
                     },
                     'iqiyi': {
-                        'find': /^http:\/\/www\.iqiyi\.com\/player\/(\d+\/Player|[a-z0-9]*)\.swf/i,
+                        'find': /^http:\/\/www\.iqiyi\.com\/(player\/\d+\/Player|common\/flashplayer\/\d+\/MainPlayer_.*)\.swf/i,
                         'replace': this.players['iqiyi']
                     },
                     'iqiyi_out': {
