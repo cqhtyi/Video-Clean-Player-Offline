@@ -2,7 +2,8 @@
  * This file is part of ADkill Player Offline
  * <http://bbs.kafan.cn/thread-1514537-1-1.html>,
  * Copyright (C) yndoc xplsy 15536900
- *
+ * Some codes came from:
+ * "Proxy SwitchySharp" (Shyc2001 http://twitter.com/shyc2001)
  * ADkill Player Offline is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 3 as
  * published by the Free Software Foundation.
@@ -10,9 +11,10 @@
  * GNU General Public License, see <http://www.gnu.org/licenses/>.
  */
 
-var proxyflag = 0;	//proxy调试标记
+var proxyflag = ""; //proxy调试标记,改为存储proxy的具体IP地址
 var cacheflag = false;	//用于确定是否需要清理缓存,注意由于隐身窗口的cookie与缓存都独立与普通窗口,因此使用API无法清理隐身窗口的缓存与cookie.
-//var xhr = new XMLHttpRequest();	
+var proxyurl = 'yk.pp.navi.youku.com:80'; //储存Proxy的具体URL地址
+//var xhr = new XMLHttpRequest();
 
 //====================================Crossdomin Spoofer Test
 //pac script
@@ -29,7 +31,7 @@ var pac = {
   }
 };
 //Permission Check + Proxy Control
-function ProxyControl(pram) {
+function ProxyControl(pram , ip) {
 	chrome.proxy.settings.get({incognito: false}, function(config){
 		//console.log(config.levelOfControl);
 		//console.log(config);
@@ -38,7 +40,7 @@ function ProxyControl(pram) {
 			case "controllable_by_this_extension":
 			// 可获得proxy控制权限，显示信息
 			console.log("Have Proxy Permission");
-			proxyflag = 1;
+			//proxyflag = 1;
 			if(pram == "set"){
 				console.log("Setup Proxy");
 				chrome.proxy.settings.set({value: pac, scope: "regular"}, function(details) {});
@@ -47,24 +49,25 @@ function ProxyControl(pram) {
 			case "controlled_by_this_extension":
 			// 已控制proxy，显示信息
 			console.log("Already controlled");
-			proxyflag = 2;
+			//proxyflag = 2;
 			if(pram == "unset"){
 				console.log("Release Proxy");
 				chrome.proxy.settings.clear({scope: "regular"});
-				FlushCache();
+				if(typeof(ip) == 'undefined') ip = "none";
+				FlushCache(ip);
 			}
 			break;
 			default:
 			// 未获得proxy控制权限，显示信息
 			console.log("No Proxy Permission");
 			console.log("Skip Proxy Control");
-			proxyflag = 0;
+			//proxyflag = 0;
 			break;
 		}
 	});
 }
-function FlushCache() {
-	if(cacheflag) {
+function FlushCache(ip) {
+	if(!chrome.runtime.lastError && ( cacheflag && ip.slice(0,ip.lastIndexOf(".")) != proxyflag.slice(0,proxyflag.lastIndexOf(".")) || ip == "none") ) { //ip地址前3段一致即可,如果上次出错则跳过
 		chrome.browsingData.remove(
 			{},{
 			"cache": true,
@@ -95,6 +98,13 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 ["blocking"]);
 chrome.webRequest.onCompleted.addListener(function(details) {
 	for (var i = 0; i < proxylist.length; i++) {
+		//获取Proxy的具体IP地址
+		if(details.url.indexOf(proxyurl.slice(0,-6)) >= 0 && details.url.indexOf("crossdomain.xml") >= 0) { //:xxxxx 6个字符,差不多就行
+			console.log(details.url);
+			proxyflag = details.ip;
+			console.log("Capture Proxy IP :" + proxyflag);
+			return;
+		}
 		if (proxylist[i].monitor.test(details.url) && proxylist[i].extra == "crossdomain") {
 			//console.log(details);
 			cacheflag = false;
@@ -103,7 +113,7 @@ chrome.webRequest.onCompleted.addListener(function(details) {
 			switch (proxylist[i].name) {
 				default:
 				console.log("Now Release Proxy ");
-				ProxyControl("unset");
+				ProxyControl("unset" , details.ip);
 				break;
 			}
 			break;
@@ -119,6 +129,13 @@ chrome.tabs.onCreated.addListener(function(tab) {
 chrome.tabs.onRemoved.addListener(function(tabId) {
 	ProxyControl("unset");
 });
+//载入获取Proxy的IP地址
+function getProxyIP() {
+	var xhr = new XMLHttpRequest();
+	url = "http://yk.pp.navi.youku.com:80/crossdomain.xml";
+	xhr.open("GET", url, true);
+	xhr.send();
+}
 //====================================Headers Modifier Test
 chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
 	//console.log(details);
@@ -203,6 +220,9 @@ var refererslist = [{
 		extra: "remove"
 	}
 	]
+
+//启动
+getProxyIP();
 //Crossdomain修改规则
 /*格式：
 	name:规则名称
@@ -242,7 +262,7 @@ var proxylist = [{
 		extra: "crossdomain"
 	},{
 		name: "crossdomain_iqiyi|pps-1",
-		find: /https?:\/\/www\.iqiyi\.com\/(player\/(\d+\/Player|[a-z0-9]*|cupid\/.*\/(pps[\w]+|clear))|common\/flashplayer\/\d+\/(Main)?Player_.*)\.swf/i,
+		find: /https?:\/\/www\.iqiyi\.com\/(player\/(\d+\/Player|[a-z0-9]*|cupid\/.*\/(pps[\w]+|clear))|common\/flashplayer\/\d+\/(Main|Share)?Player_.*)\.swf/i,
 		monitor: /http:\/\/data\.video\.qiyi\.com\/crossdomain\.xml/i,
 		extra: "crossdomain"
 	},{
