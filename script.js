@@ -30,16 +30,17 @@
                     'pplive': this.iURL + 'pplive.swf',
                     'pplive_live': this.iURL + 'pplive_live.swf',
                     'tudou': this.iURL + 'tudou.swf',
-//                    'letv': this.iURL + 'letv.swf',
-//                    'sohu':this.iURL + 'sohu.swf',
+                    //'letv': this.iURL + 'letv.swf',
+                    'sohu':this.iURL + 'sohu.swf',
+                    'sohu_live': this.iURL + 'sohu_live.swf',
 //======================必须在线版地址开始======================================================================================
 //双虚线之间的地址不能换为本地地址，否则外联出错，请尽量更改为自己的服务器地址！
                     'letv': this.iURL_on + 'letv.swf',
                     //'letv_c': this.iURL_on + 'letv0225.swf',
                     'tudou_olc': this.iURL_on + 'olc_8.swf',
                     'tudou_sp': this.iURL_on + 'sp.swf',
-                    'sohu': this.iURL_on + 'sohu.swf',
-                    'sohu_live': this.iURL_on + 'sohu_live.swf',
+                    //'sohu': this.iURL_on + 'sohu.swf',
+                    //'sohu_live': this.iURL_on + 'sohu_live.swf',
                     '17173': this.iURL_on + '17173.swf', 
                     '17173_out': this.iURL_on + '17173_out.swf',
                     '17173_live': this.iURL_on + '17173_live.swf',
@@ -120,8 +121,8 @@
                         'replace': this.players['letv']
                     },
                     'letv_skin': {
-                        'find': /http:\/\/.*letv[\w]*\.com\/p\/\d+\/\d+\/(?!1456)\d*\/newplayer\/\d+\/SLetvPlayer\.swf/i,
-                        'replace': 'http://player.letvcdn.com/p/201403/05/1456/newplayer/1/SLetvPlayer.swf'
+                        'find': /http:\/\/.*letv[\w]*\.com\/p\/\d+\/\d+\/(?!15)\d*\/newplayer\/\d+\/S?SLetvPlayer\.swf/i,
+                        'replace': 'http://player.letvcdn.com/p/201407/24/15/newplayer/1/SSLetvPlayer.swf'
                     },
                     'sohu': {
                         'find': /^http:\/\/tv\.sohu\.com\/upload\/swf\/(?!(live|\d+)).*\d+\/(main|PlayerShell)\.swf/i,
@@ -133,11 +134,11 @@
                     },
                     'sohu_out_1': {
                         'find': /^http:\/\/.*\.sohu\.com\/my\/v\.swf(.*)/i,
-                        'replace': this.players['sohu'] + '?$1'
+                        'replace': this.players['sohu_live'] + '?$1'
                     },
                     'sohu_out_2': {
                         'find': /^http:\/\/.*\.sohu\.com\/(\d+)\/v\.swf/i,
-                        'replace': this.players['sohu'] + '?vid=$1'
+                        'replace': this.players['sohu_live'] + '?vid=$1'
                     },
                     '17173': {
                         'find': /^http:\/\/f\.v\.17173cdn\.com\/(\d*)\/flash\/PreloaderFile\.swf/i,
