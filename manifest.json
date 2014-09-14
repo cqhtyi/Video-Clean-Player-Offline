@@ -7,6 +7,7 @@
       "exclude_matches": [  ],
       "include_globs": [  ],
       "js": [ "script.js" ],
+      "css": ["css/custom.css"],
       "matches": [ "http://*/*", "https://*/*" ],
       "run_at": "document_idle"
    } ],
@@ -24,6 +25,6 @@
 		"default_title" : "Video.Clean.Player.Offline"
 	},
    "permissions": [ "proxy", "tabs", "browsingData", "webRequest", "webRequestBlocking", "http://*/*", "https://*/*" ],
-   "version": "3.14.826.1",
+   "version": "3.14.914",
    "web_accessible_resources": [ "swf/*.swf" ]
 }
