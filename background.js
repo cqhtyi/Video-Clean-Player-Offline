@@ -257,7 +257,7 @@ var proxylist = [{
 		extra: "crossdomain"
 	},{
 		name: "crossdomain_sohu",
-		find: /http:\/\/(tv\.sohu\.com\/|61\.135\.176\.223.*).*\/(main|PlayerShell)\.swf/i,
+		find: /http:\/\/(tv\.sohu\.com\/|(\d+\.){3}\d+(:\d+)?).*\/(main|PlayerShell)\.swf/i,
 		monitor: /http:\/\/(photocdn|live\.tv)\.sohu\.com\/crossdomain\.xml/i,
 		extra: "crossdomain"
 	},{
