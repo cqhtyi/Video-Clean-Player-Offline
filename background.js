@@ -11,7 +11,7 @@
  * GNU General Public License, see <http://www.gnu.org/licenses/>.
  */
 
-var proxyflag = "";  	//proxy调试标记,改为存储proxy的具体IP地址
+var proxyflag = ""; //proxy调试标记,改为存储proxy的具体IP地址
 var cacheflag = false;	//用于确定是否需要清理缓存,注意由于隐身窗口的cookie与缓存都独立与普通窗口,因此使用API无法清理隐身窗口的缓存与cookie.
 var proxyurl = 'yk.pp.navi.youku.com:80'; //储存Proxy的具体URL地址
 //var xhr = new XMLHttpRequest();
@@ -40,7 +40,7 @@ function ProxyControl(pram , ip) {
 			case "controllable_by_this_extension":
 			// 可获得proxy控制权限，显示信息
 			console.log("Have Proxy Permission");
-//			proxyflag = 1;
+			//proxyflag = 1;
 			if(pram == "set"){
 				console.log("Setup Proxy");
 				chrome.proxy.settings.set({value: pac, scope: "regular"}, function(details) {});
@@ -49,7 +49,7 @@ function ProxyControl(pram , ip) {
 			case "controlled_by_this_extension":
 			// 已控制proxy，显示信息
 			console.log("Already controlled");
-//			proxyflag = 2;
+			//proxyflag = 2;
 			if(pram == "unset"){
 				console.log("Release Proxy");
 				chrome.proxy.settings.clear({scope: "regular"});
@@ -61,13 +61,13 @@ function ProxyControl(pram , ip) {
 			// 未获得proxy控制权限，显示信息
 			console.log("No Proxy Permission");
 			console.log("Skip Proxy Control");
-//			proxyflag = 0;
+			//proxyflag = 0;
 			break;
 		}
 	});
 }
 function FlushCache(ip) {
-	if(cacheflag && ip != proxyflag || ip == "none") {
+	if(!chrome.runtime.lastError && ( cacheflag && ip.slice(0,ip.lastIndexOf(".")) != proxyflag.slice(0,proxyflag.lastIndexOf(".")) || ip == "none") ) { //ip地址前3段一致即可,如果上次出错则跳过
 		chrome.browsingData.remove(
 			{},{
 			"cache": true,
@@ -131,10 +131,10 @@ chrome.tabs.onRemoved.addListener(function(tabId) {
 });
 //载入获取Proxy的IP地址
 function getProxyIP() {
-		var xhr = new XMLHttpRequest();
-		url = "http://yk.pp.navi.youku.com:80/crossdomain.xml";
-		xhr.open("GET", url, true);
-		xhr.send();
+	var xhr = new XMLHttpRequest();
+	url = "http://yk.pp.navi.youku.com:80/crossdomain.xml";
+	xhr.open("GET", url, true);
+	xhr.send();
 }
 //====================================Headers Modifier Test
 chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
@@ -220,6 +220,9 @@ var refererslist = [{
 		extra: "remove"
 	}
 	]
+
+//启动
+getProxyIP();
 //Crossdomain修改规则
 /*格式：
 	name:规则名称
@@ -254,12 +257,12 @@ var proxylist = [{
 		extra: "crossdomain"
 	},{
 		name: "crossdomain_sohu",
-		find: /http:\/\/(tv\.sohu\.com\/|61\.135\.176\.223.*).*\/(main|PlayerShell)\.swf/i,
+		find: /http:\/\/(tv\.sohu\.com\/|(\d+\.){3}\d+(:\d+)?).*\/(main|PlayerShell)\.swf/i,
 		monitor: /http:\/\/(photocdn|live\.tv)\.sohu\.com\/crossdomain\.xml/i,
 		extra: "crossdomain"
 	},{
 		name: "crossdomain_iqiyi|pps-1",
-		find: /https?:\/\/www\.iqiyi\.com\/(player\/(\d+\/Player|[a-z0-9]*|cupid\/.*\/(pps[\w]+|clear))|common\/flashplayer\/\d+\/(Main)?Player_.*)\.swf/i,
+		find: /https?:\/\/www\.iqiyi\.com\/(player\/(\d+\/Player|[a-z0-9]*|cupid\/.*\/(pps[\w]+|clear))|common\/flashplayer\/\d+\/(Main|Share)?Player_.*)\.swf/i,
 		monitor: /http:\/\/data\.video\.qiyi\.com\/crossdomain\.xml/i,
 		extra: "crossdomain"
 	},{

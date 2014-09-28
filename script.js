@@ -8,16 +8,16 @@
 
     function YoukuAntiAds() {}
     YoukuAntiAds.prototype = {
-//        iURL: chrome.extension.getURL('swf/'),  //本地地址,默认！
-        iURL: 'http://code.taobao.org/svn/noadsplayer/trunk/Player/',   //在线地址供参考，内含播放器不全！请自行替换为自己的！因被墙GCode地址已取不到！
-        iURL_on: 'http://code.taobao.org/svn/noadsplayer/trunk/Player/',   //必须在线的地址
+        iURL: chrome.extension.getURL('swf/'),  //本地地址,默认！
+//        iURL: 'http://noads.mujj.us/swf/',  //在线地址
+        iURL_on: 'http://noads.mujj.us/swf/', //必须在线的地址
         _players: null,
         _rules: null,
         _done: null,
         get players() {
             if(!this._players) {
                 this._players = {
-//=====================在线版or本地版（由iURL决定） 地址开始=================================================
+//=====================在线版or本地版（由iURL决定）地址开始=================================================
 //双虚线之前为在线地址，请自行需该服务器地址！如使用本地版请注释掉双虚线以上地址
                     'youku_loader': this.iURL + 'loader.swf',
                     'youku_player': this.iURL + 'player.swf',
@@ -30,20 +30,21 @@
                     'pplive': this.iURL + 'pplive.swf',
                     'pplive_live': this.iURL + 'pplive_live.swf',
                     'tudou': this.iURL + 'tudou.swf',
-                    'letv': this.iURL + 'letv.swf',
-                    'sohu':this.iURL + 'sohu/sohu.swf',
-                    'sohu_live':this.iURL + 'sohu/sohu_live.swf',
-                    '17173': this.iURL + '17173/17173.swf', //建议把17173所有播放器放到指定文件夹以便维护！'17173/' 指代文件夹（如无请去除！）。下同。
-                    '17173_live': this.iURL + '17173/17173_live.swf',
+                    //'letv': this.iURL + 'letv.swf',
+                    'sohu':this.iURL + 'sohu.swf',
+                    'sohu_live': this.iURL + 'sohu_live.swf',
 //======================必须在线版地址开始======================================================================================
 //双虚线之间的地址不能换为本地地址，否则外联出错，请尽量更改为自己的服务器地址！
-                    'letv_o': this.iURL_on + 'letv.swf',
-//                    'letv_c': this.iURL_on + 'letv0225.swf',
+                    'letv': this.iURL_on + 'letv.swf',
+                    //'letv_c': this.iURL_on + 'letv0225.swf',
                     'tudou_olc': this.iURL_on + 'olc_8.swf',
                     'tudou_sp': this.iURL_on + 'sp.swf',
-   //                 'sohu': this.iURL_on + 'sohu.swf',
-   //                 '17173': this.iURL_on + '17173/17173.swf', 
-   //                 '17173_live': this.iURL_on + '17173/17173_live.swf',
+                    //'sohu': this.iURL_on + 'sohu.swf',
+                    //'sohu_live': this.iURL_on + 'sohu_live.swf',
+                    '17173_in_Vod': this.iURL_on + '17173.in.vod.swf', 
+                    '17173_out_Vod': this.iURL_on + '17173.out.vod.swf',
+                    '17173_in_Live': this.iURL_on + '17173.in.live.swf',
+                    '17173_out_Live': this.iURL_on + '17173.out.live.swf',
 //========================必须在线版地址结束========================================================
                };
             }
@@ -57,8 +58,8 @@
                         'replace': this.players['youku_loader']
                     },
                     'youku_player': {
-                        'find': /^http:\/\/static\.youku\.com(\/v[\d\.]+)?\/v\/swf\/q?player[^\.]*\.swf(\?.*)?/i,
-                        'replace': this.players['youku_loader'] + '$2'
+                        'find': /^http:\/\/static\.youku\.com(\/v[\d\.]*)?\/v\/swf\/q?player.*\.swf/i,
+                        'replace': this.players['youku_loader']
                     },
                     'youku_out': {
                         'find': /^http:\/\/player\.youku\.com\/player\.php\/.*sid\/([\w=]+).*(\/v)?\.swf.*/i,
@@ -105,7 +106,7 @@
                         'replace': this.players['tudou_olc'] + '?tvcCode=-1&swfPath=' + this.players['tudou_sp']
                     },
                     'letv': {
-                        'find': /^http:\/\/.*letv[\w]*\.com\/.*\/((?!(Live|seed))((C|S)[\w]{2,3})?(?!Live)[\w]{4}|swf)Player*\.swf/i,
+                        'find': /^http:\/\/.*letv[\w]*\.com\/.*\/((?!(Live|seed|Disk))(S[\w]{2,3})?(?!Live)[\w]{4}|swf|VLetv)Player[^\.]*\.swf/i,
                         'replace': this.players['letv']
                     },
                     'letv_hz': {
@@ -118,7 +119,7 @@
                     },
                     'letv_out': {
                         'find': /^http:\/\/.*\.letvimg\.com\/.*\/(letvbili|lbplayer|letv-wrapper|acfunletv[^\.]*)\.swf/i,
-                        'replace': this.players['letv_o']
+                        'replace': this.players['letv']
                     },
                     'letv_skin': {
                         'find': /http:\/\/.*letv[\w]*\.com\/p\/\d+\/\d+\/(?!15)\d*\/newplayer\/\d+\/S?SLetvPlayer\.swf/i,
@@ -129,32 +130,36 @@
                         'replace': this.players['sohu']
                     },
                     'sohu_live': {
-                        'find': /^http:\/\/(tv\.sohu\.com\/upload\/swf\/(live\/|)\d+|61\.135\.176\.223.*\/.*)\/(main|PlayerShell)\.swf/i,
+                        'find': /^http:\/\/(tv\.sohu\.com\/upload\/swf\/(live\/|)\d+|(\d+\.){3}\d+(:\d+)?\/.*player)\/(Main|PlayerShell)\.swf/i,
                         'replace': this.players['sohu_live']
                     },
                     'sohu_out_1': {
                         'find': /^http:\/\/.*\.sohu\.com\/my\/v\.swf(.*)/i,
-                        'replace': this.players['sohu'] + '?$1'
+                        'replace': this.players['sohu_live'] + '?$1'
                     },
                     'sohu_out_2': {
                         'find': /^http:\/\/.*\.sohu\.com\/(\d+)\/v\.swf/i,
-                        'replace': this.players['sohu'] + '?vid=$1'
+                        'replace': this.players['sohu_live'] + '?vid=$1'
                     },
-                    '17173': {
-                        'find': /^http:\/\/f\.v\.17173cdn\.com\/(\d*)\/flash\/PreloaderFile\.swf/i,
-                        'replace': this.players['17173'] 
+                    '17173_in_Vod': {
+                        'find': /^http:\/\/f\.v\.17173cdn\.com\/\d+\/flash\/PreloaderFile\.swf/i,
+                        'replace': this.players['17173_in_Vod'] 
                     },
-                    '17173_live': {
-                        'find': /^http:\/\/f\.v\.17173cdn\.com\/(\d*)\/flash\/Player_stream(_firstpage)?\.swf/i,
-                        'replace': this.players['17173_live']
-                    },
-                    '17173_out_1': {
+                    '17173_out_Vod_1': {
                         'find': /^http:\/\/f\.v\.17173cdn\.com\/player_f2\/(\w+)\.swf/i,
-                        'replace': this.players['17173_out'] + '?cid=$1'
+                        'replace': this.players['17173_out_Vod'] + '?cid=$1'
                     },
-                    '17173_out_2': {
+                    '17173_out_Vod_2': {
                         'find': /^(http:\/\/17173\.tv\.sohu\.com\/player[^\.]*\.swf)/i,
-                        'replace': this.players['17173_out']
+                        'replace': this.players['17173_out_Vod']
+                    },
+                    '17173_in_Live': {
+                        'find': /^http:\/\/f\.v\.17173cdn\.com\/\d+\/flash\/Player_stream(_firstpage)?\.swf/i,
+                        'replace': this.players['17173_in_Live']
+                    },
+                    '17173_out_Live': {
+                        'find': /^http:\/\/v\.17173\.com\/live\/player\/Player_stream_(custom)?Out\.swf/i,
+                        'replace': this.players['17173_out_Live'] + '?'
                     }
                 }
             }
