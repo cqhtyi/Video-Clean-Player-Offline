@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of ADkill Player Offline
  * <http://bbs.kafan.cn/thread-1514537-1-1.html>,
  * Copyright (C) yndoc xplsy 15536900
@@ -232,7 +232,7 @@ getProxyIP();
 */
 var proxylist = [{
 		name: "crossdomain_youku",
-		find: /http:\/\/static\.youku\.com\/.*?q?(player|loaders?)(_[^.]+)?\.swf/i,	//播放器载入地址
+		find: /http:\/\/static\.youku\.com\/.*?q?(player|loaders?|\w{13})(_[^.]+)?\.swf/i,	//播放器载入地址
 		monitor:/http:\/\/v\.youku\.com\/crossdomain\.xml/i,	//youku tudou实际访问的均是这个地址
 		extra: "crossdomain"
 	},{
@@ -257,12 +257,12 @@ var proxylist = [{
 		extra: "crossdomain"
 	},{
 		name: "crossdomain_sohu",
-		find: /http:\/\/(tv\.sohu\.com\/|(\d+\.){3}\d+(:\d+)?).*\/(main|PlayerShell)\.swf/i,
+		find: /http:\/\/(tv\.sohu\.com\/|(\d+\.){3}\d+(:\d+)?).*\/(Main|PlayerShell)\.swf/i,
 		monitor: /http:\/\/(photocdn|live\.tv)\.sohu\.com\/crossdomain\.xml/i,
 		extra: "crossdomain"
 	},{
 		name: "crossdomain_iqiyi|pps-1",
-		find: /https?:\/\/www\.iqiyi\.com\/(player\/(\d+\/Player|[a-z0-9]*|cupid\/.*\/(pps[\w]+|clear))|common\/flashplayer\/\d+\/(Main|Share)?Player_.*)\.swf/i,
+		find: /https?:\/\/www\.iqiyi\.com\/(player\/(\d+\/Player|[a-z0-9]*|cupid\/.*\/(pps[\w]+|clear))|common\/flashplayer\/\d+\/((PPS)?Main|Share)?Player.*_(.|ad\d+))\.swf/i,
 		monitor: /http:\/\/data\.video\.qiyi\.com\/crossdomain\.xml/i,
 		extra: "crossdomain"
 	},{

@@ -1,4 +1,4 @@
-(function() {
+﻿(function() {
     Function.prototype.bind = function() {
         var fn = this, args = Array.prototype.slice.call(arguments), obj = args.shift();
         return function() {
@@ -54,11 +54,11 @@
             if(!this._rules) {
                 this._rules = {
                     'youku_loader': {
-                        'find': /^http:\/\/static\.youku\.com(\/v[\d\.]*)?\/v\/swf\/loaders?\.swf/i,
+                        'find': /^http:\/\/static\.youku\.com(\/v[\d\.]*)?\/v\/swf\/loaders?[^\.]*\.swf/i,
                         'replace': this.players['youku_loader']
                     },
                     'youku_player': {
-                        'find': /^http:\/\/static\.youku\.com(\/v[\d\.]*)?\/v\/swf\/q?player.*\.swf/i,
+                        'find': /^http:\/\/static\.youku\.com(\/v[\d\.]*)?\/v\/swf\/(q?player[^\.]*|\w{13})\.swf/i,
                         'replace': this.players['youku_loader']
                     },
                     'youku_out': {
@@ -66,7 +66,7 @@
                         'replace': this.players['youku_loader'] + '?showAd=0&VideoIDS=$1'
                     },
                     'ku6': {
-                        'find': /^http:\/\/player\.ku6cdn\.com\/default\/.*\/(v|player)\.swf/i,
+                        'find': /^http:\/\/player\.ku6cdn\.com\/default\/.*\/(v|player)[^\.]*\.swf/i,
                         'replace': this.players['ku6']
                     },
                     'ku6_out': {
@@ -74,7 +74,7 @@
                         'replace': this.players['ku6_out'] + '?vid=$2'
                     },
                     'iqiyi': {
-                        'find': /^https?:\/\/www\.iqiyi\.com\/(player\/(\d+\/Player|[a-z0-9]*)|common\/flashplayer\/\d+\/(Main)?Player_.*)\.swf/i,
+                        'find': /^https?:\/\/www\.iqiyi\.com\/(player\/(\d+\/Player|[a-z0-9]*)|common\/flashplayer\/\d+\/((PPS)?Main|Share)?Player.*_(.|ad\d+))\.swf/i,
                         'replace': this.players['iqiyi']
                     },
                     'iqiyi_out': {
@@ -113,7 +113,7 @@
                         'find': /^http:\/\/.*letv[\w]*\.com\/(hz|.*player\/(s)?sdkletv)player\.swf.*/i,
                         'replace': this.players['letv']
                     },
-                    'letv_c': {
+                    'letv_cloud': {
                         'find': /^http:\/\/.*(letv[\w]*|dwstatic)\.com\/.*(cloud|vpp)\.swf/i,
                         'replace': this.players['letv_c']
                     },
@@ -126,11 +126,11 @@
                         'replace': 'http://player.letvcdn.com/p/201407/24/15/newplayer/1/SSLetvPlayer.swf'
                     },
                     'sohu': {
-                        'find': /^http:\/\/tv\.sohu\.com\/upload\/swf\/(?!(live|\d+)).*\d+\/(main|PlayerShell)\.swf/i,
+                        'find': /^http:\/\/tv\.sohu\.com\/upload\/swf\/(?!(live|\d+)).*\d+\/(Main|PlayerShell)[^\.]*\.swf/i,
                         'replace': this.players['sohu']
                     },
                     'sohu_live': {
-                        'find': /^http:\/\/(tv\.sohu\.com\/upload\/swf\/(live\/|)\d+|(\d+\.){3}\d+(:\d+)?\/.*player)\/(Main|PlayerShell)\.swf/i,
+                        'find': /^http:\/\/(tv\.sohu\.com\/upload\/swf\/(live\/|)\d+|(\d+\.){3}\d+(:\d+)?\/.*player)\/(Main|PlayerShell)[^\.]*\.swf/i,
                         'replace': this.players['sohu_live']
                     },
                     'sohu_out_1': {
@@ -142,7 +142,7 @@
                         'replace': this.players['sohu_live'] + '?vid=$1'
                     },
                     '17173_in_Vod': {
-                        'find': /^http:\/\/f\.v\.17173cdn\.com\/\d+\/flash\/PreloaderFile\.swf/i,
+                        'find': /^http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/i,
                         'replace': this.players['17173_in_Vod'] 
                     },
                     '17173_out_Vod_1': {
