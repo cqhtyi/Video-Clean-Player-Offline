@@ -31,7 +31,7 @@
                     'pplive_live': this.iURL + 'pplive_live.swf',
                     'tudou': this.iURL + 'tudou.swf',
                     //'letv': this.iURL + 'letv.swf',
-                    'sohu':this.iURL + 'sohu.swf',
+                    'sohu':this.iURL + 'sohu.swf',333
                     'sohu_live': this.iURL + 'sohu_live.swf',
 //======================必须在线版地址开始======================================================================================
 //双虚线之间的地址不能换为本地地址，否则外联出错，请尽量更改为自己的服务器地址！
@@ -43,7 +43,7 @@
                     //'sohu_live': this.iURL_on + 'sohu_live.swf',
                     '17173_in_Vod': this.iURL_on + '17173.in.vod.swf', 
                     '17173_out_Vod': this.iURL_on + '17173.out.vod.swf',
-                    '17173_in_Live': this.iURL_on + '17173.in.live.swf',
+                    '17173_in_Live': this.iURL_on + '171766f',
                     '17173_out_Live': this.iURL_on + '17173.out.live.swf',
 //========================必须在线版地址结束========================================================
                };
